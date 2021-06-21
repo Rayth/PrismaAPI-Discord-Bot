@@ -23,7 +23,7 @@ namespace PrismaBot
             {
                 LogLevel = LogSeverity.Verbose
             });
-            //_client.Log += Logger; //Send logs to console.
+            _client.Log += Logger; //Send logs to console.
             await _client.LoginAsync(TokenType.Bot, BotConfig.Load().DiscordToken);
             await _client.StartAsync();
 
@@ -50,6 +50,31 @@ namespace PrismaBot
             {
                 Console.WriteLine("Existing Config file located. Loaded.");
             }
+        }
+
+        public static Task Logger(LogMessage msg)
+        {
+            var col = Console.ForegroundColor;
+            switch (msg.Severity)
+            {
+                case LogSeverity.Critical:
+                case LogSeverity.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogSeverity.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogSeverity.Info:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogSeverity.Verbose:
+                case LogSeverity.Debug:
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    break;
+            }
+            Console.WriteLine($"{DateTime.Now} [{msg.Severity,8}] {msg.Source}: {msg.Message}");
+            Console.ForegroundColor = col;
+            return Task.CompletedTask;
         }
     }
 }
