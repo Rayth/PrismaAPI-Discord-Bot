@@ -4,6 +4,8 @@ using Discord;
 using Discord.WebSocket;
 using System.IO;
 using PrismaBot.Config;
+using Microsoft.Extensions.DependencyInjection;
+using Discord.Commands;
 
 namespace PrismaBot
 {
@@ -13,6 +15,7 @@ namespace PrismaBot
             new Program().Start().GetAwaiter().GetResult();
 
         private DiscordSocketClient _client;
+        private CommandHandler _commands;
 
         public async Task Start()
         {
@@ -27,6 +30,11 @@ namespace PrismaBot
             await _client.LoginAsync(TokenType.Bot, BotConfig.Load().DiscordToken);
             await _client.StartAsync();
 
+            //Create Service Provider and Load Command Handler
+            IServiceProvider serviceProvider = ConfigureServices();
+            _commands = new CommandHandler(serviceProvider);
+            await _commands.ConfigureAsync();
+
             //Keep program running until it is closed or told to close.
             await Task.Delay(-1);
         }
@@ -37,7 +45,7 @@ namespace PrismaBot
             //If File doesn't exist, create it. Ask user for inputs.
             if (!File.Exists(loc))
             {
-                var Config = new BotConfig(); //New config object
+                BotConfig Config = new BotConfig(); //New config object
                 Console.WriteLine("This is the first time you have run this bot. Please enter some information to get set up.");
                 Console.Write("Discord Bot Token: "); Config.DiscordToken = Console.ReadLine();
                 Console.Write("Discord Command Prefix: "); Config.Prefix = Console.ReadLine();
@@ -54,7 +62,7 @@ namespace PrismaBot
 
         public static Task Logger(LogMessage msg)
         {
-            var col = Console.ForegroundColor;
+            ConsoleColor col = Console.ForegroundColor;
             switch (msg.Severity)
             {
                 case LogSeverity.Critical:
@@ -75,6 +83,16 @@ namespace PrismaBot
             Console.WriteLine($"{DateTime.Now} [{msg.Severity,8}] {msg.Source}: {msg.Message}");
             Console.ForegroundColor = col;
             return Task.CompletedTask;
+        }
+
+        public IServiceProvider ConfigureServices()
+        {
+
+            IServiceCollection services = new ServiceCollection()
+                .AddSingleton(_client)
+                 .AddSingleton(new CommandService(new CommandServiceConfig { CaseSensitiveCommands = false }));
+            IServiceProvider provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
+            return provider;
         }
     }
 }
