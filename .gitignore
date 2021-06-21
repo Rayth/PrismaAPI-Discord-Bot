@@ -2,5 +2,4 @@
 /.vs/
 /PrismaBot/obj/
 /PrismaBot/bin/
-*.sln
 *.csproj*
