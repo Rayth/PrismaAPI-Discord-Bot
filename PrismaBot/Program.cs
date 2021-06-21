@@ -1,6 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
+using System.IO;
 using PrismaBot.Config;
 
 namespace PrismaBot
@@ -10,9 +12,23 @@ namespace PrismaBot
         public static void Main(string[] args) =>
             new Program().Start().GetAwaiter().GetResult();
 
+        private DiscordSocketClient _client;
+
         public async Task Start()
         {
             LoadConfig();
+
+            //Let's connect the bot to Discord
+            _client = new DiscordSocketClient(new DiscordSocketConfig()
+            {
+                LogLevel = LogSeverity.Verbose
+            });
+            //_client.Log += Logger; //Send logs to console.
+            await _client.LoginAsync(TokenType.Bot, BotConfig.Load().DiscordToken);
+            await _client.StartAsync();
+
+            //Keep program running until it is closed or told to close.
+            await Task.Delay(-1);
         }
 
         public static void LoadConfig()
