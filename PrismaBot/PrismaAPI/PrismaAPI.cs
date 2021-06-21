@@ -1,17 +1,16 @@
 ﻿using PrismaBot.Config;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace PrismaBot.PrismaAPI
 {
-    public class PrismaAPI
+    public class PrisAPI
     {
         private string Key = BotConfig.Load().APIKey;
         private string User = BotConfig.Load().APIUser;
         private string Server = BotConfig.Load().APIServer;
 
-        public void ConsoleAsync(string command)
+        public void Console(string command)
         {
             using HttpClient httpClient = new HttpClient();
 
