@@ -1,6 +1,7 @@
 ﻿using PrismaBot.Config;
-using System.Collections.Generic;
 using System.Net.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PrismaBot.PrismaAPI
 {
@@ -10,7 +11,7 @@ namespace PrismaBot.PrismaAPI
         private string User = BotConfig.Load().APIUser;
         private string Server = BotConfig.Load().APIServer;
 
-        public void Console(string command)
+        public async Task ConsoleCmdAsync(string command)
         {
             using HttpClient httpClient = new HttpClient();
 
@@ -21,10 +22,11 @@ namespace PrismaBot.PrismaAPI
             request.Content = new FormUrlEncodedContent(new[] {
                                     new KeyValuePair<string, string>("command", command),
                                 });
+            HttpResponseMessage response = await httpClient.SendAsync(request);
             return;
         }
 
-        public void StartServer()
+        public async Task StartServerAsync()
         {
             using HttpClient httpClient = new HttpClient();
 
@@ -32,10 +34,11 @@ namespace PrismaBot.PrismaAPI
             request.Headers.TryAddWithoutValidation("Content-Type", "application/json");
             request.Headers.TryAddWithoutValidation("X-Api-Key", Key);
             request.Headers.TryAddWithoutValidation("X-Api-User", User);
+            HttpResponseMessage response = await httpClient.SendAsync(request);
             return;
         }
 
-        public void StopServer()
+        public async Task StopServerAsync()
         {
             using HttpClient httpClient = new HttpClient();
 
@@ -43,10 +46,11 @@ namespace PrismaBot.PrismaAPI
             request.Headers.TryAddWithoutValidation("Content-Type", "application/json");
             request.Headers.TryAddWithoutValidation("X-Api-Key", Key);
             request.Headers.TryAddWithoutValidation("X-Api-User", User);
+            HttpResponseMessage response = await httpClient.SendAsync(request);
             return;
         }
 
-        public void RestartServer()
+        public async Task RestartServerAsync()
         {
             using HttpClient httpClient = new HttpClient();
 
@@ -54,6 +58,7 @@ namespace PrismaBot.PrismaAPI
             request.Headers.TryAddWithoutValidation("Content-Type", "application/json");
             request.Headers.TryAddWithoutValidation("X-Api-Key", Key);
             request.Headers.TryAddWithoutValidation("X-Api-User", User);
+            HttpResponseMessage response = await httpClient.SendAsync(request);
             return;
         }
 

@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord;
+using System;
 using System.Threading.Tasks;
 using PrismaBot.PrismaAPI;
 
@@ -10,10 +11,10 @@ namespace PrismaBot.Modules.Admin
         [Command("console")]
         [Remarks("Sends a command to your Prisma Console")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task Console([Remainder] string command)
+        public async Task ConsoleCmd([Remainder] string command)
         {
             PrisAPI Prisma = new PrisAPI();
-            Prisma.Console(command);
+            await Prisma.ConsoleCmdAsync(command);
             await ReplyAsync("Command Executed.");
         }
 
@@ -23,7 +24,7 @@ namespace PrismaBot.Modules.Admin
         public async Task Start()
         {
             PrisAPI Prisma = new PrisAPI();
-            Prisma.StartServer();
+            await Prisma.StartServerAsync();
             await ReplyAsync("Server Started.");
         }
 
@@ -33,7 +34,7 @@ namespace PrismaBot.Modules.Admin
         public async Task Stop()
         {
             PrisAPI Prisma = new PrisAPI();
-            Prisma.StopServer();
+            await Prisma .StopServerAsync();
             await ReplyAsync("Server Stopped.");
         }
 
@@ -43,7 +44,7 @@ namespace PrismaBot.Modules.Admin
         public async Task Restart()
         {
             PrisAPI Prisma = new PrisAPI();
-            Prisma.RestartServer();
+            await Prisma .RestartServerAsync();
             await ReplyAsync("Server restarted.");
         }
     }
